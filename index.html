@@ -25,13 +25,12 @@
   <!-- sus Developer Google Search Console Verifications -->
   <meta name="google-site-verification" content="UbCFuyQnLiGfHFSU_Z5NFExI5jrTz9EGxkf1ygz7sG4" />
 
-  <link rel="canonical" href="astralyxpvp.github.io" />
+  <link rel="canonical" href="https://astralyxpvp.github.io" />
 
   <!-- SEO Metadata -->
   <meta name="description" content="Join AstralyxPvP, the premier India-based 1.9+ FFA PvP server. Experience fast-paced combat, skill-based battles, ELO Live Leaderboards, crates, and a thriving community. Prove your dominance in the arena today!" />
   <meta name="keywords" content="Minecraft PvP server, 1.9 PvP, FFA PvP, India Minecraft server, ELO Leaderboard, Minecraft crates, skill-based PvP, free Minecraft server, cracked Minecraft server, astralyx, astralyxpvp" />
   <meta name="author" content="Frostrax (Owner), IndianCoder3 &amp; DreamLong (NebulaGames Developers)" />
-  <!-- Contact: astralyxpvp@gmail.com -->
 
   <!-- Structured Data for Rich Search Results -->
   <script type="application/ld+json">
@@ -58,8 +57,8 @@
   <!-- Social & Discord Webhook Embed Optimization (Open Graph) -->
   <meta property="og:title" content="AstralyxPvP - The Ultimate 1.9 FFA PvP Battlefield" />
   <meta property="og:description" content="Join AstralyxPvP, the premier India-based 1.9+ FFA PvP server. Experience fast-paced combat, skill-based battles, ELO Live Leaderboards, crates, and a thriving community." />
-  <meta property="og:image" content="astralyxpvp.pages.dev/Assets/logo-compress.png" />
-  <meta property="og:url" content="astralyxpvp.pages.dev" />
+  <meta property="og:image" content="https://astralyxpvp.pages.dev/Assets/logo-compress.png" />
+  <meta property="og:url" content="https://astralyxpvp.pages.dev" />
   <meta property="og:type" content="website" />
 
   <!-- Device Favicons & Web Manifest File -->
@@ -73,7 +72,23 @@
 </head>
 <body>
 
-  <iframe src="https://astralyxpvp.pages.dev"></iframe>
+  <!-- Given an ID so JavaScript can find and update it -->
+  <iframe id="main-frame" src="https://astralyxpvp.pages.dev"></iframe>
+
+  <script>
+    // 1. Get the path (e.g., "/leaderboard" or "/x") and any parameters (e.g., "?user=player1")
+    const currentPath = window.location.pathname;
+    const currentSearch = window.location.search;
+
+    // 2. Define your base target website
+    const targetBaseUrl = "https://astralyxpvp.pages.dev";
+
+    // 3. Combine them to create the target destination URL
+    const destinationUrl = targetBaseUrl + currentPath + currentSearch;
+
+    // 4. Update the iframe's source instantly before the user notices
+    document.getElementById('main-frame').src = destinationUrl;
+  </script>
 
 </body>
 </html>
