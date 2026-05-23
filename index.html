@@ -22,7 +22,7 @@
   <!-- Optimized Search Title for Better Google CTR -->
   <title>AstralyxPvP | India 1.9+ FFA Minecraft PvP Server</title>
 
-  <!-- sus Developer Google Search Console Verifications -->
+  <!-- Developer Google Search Console Verifications -->
   <meta name="google-site-verification" content="UbCFuyQnLiGfHFSU_Z5NFExI5jrTz9EGxkf1ygz7sG4" />
 
   <link rel="canonical" href="https://astralyxpvp.github.io" />
@@ -72,22 +72,19 @@
 </head>
 <body>
 
-  <!-- Given an ID so JavaScript can find and update it -->
+  <!-- The iframe defaults to your homepage -->
   <iframe id="main-frame" src="https://astralyxpvp.pages.dev"></iframe>
 
   <script>
-    // 1. Get the path (e.g., "/leaderboard" or "/x") and any parameters (e.g., "?user=player1")
-    const currentPath = window.location.pathname;
-    const currentSearch = window.location.search;
-
-    // 2. Define your base target website
+    // 1. Check if the URL has a hash (like #leaderboard or #x)
+    const currentHash = window.location.hash;
     const targetBaseUrl = "https://astralyxpvp.pages.dev";
 
-    // 3. Combine them to create the target destination URL
-    const destinationUrl = targetBaseUrl + currentPath + currentSearch;
-
-    // 4. Update the iframe's source instantly before the user notices
-    document.getElementById('main-frame').src = destinationUrl;
+    if (currentHash) {
+      const cleanPath = currentHash.replace('#', '/');
+      const currentSearch = window.location.search;
+      document.getElementById('main-frame').src = targetBaseUrl + cleanPath + currentSearch;
+    }
   </script>
 
 </body>
