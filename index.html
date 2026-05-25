@@ -68,7 +68,45 @@
   <link rel="apple-touch-icon" sizes="180x180" href="Assets/apple-touch-icon.png" />
   <meta name="apple-mobile-web-app-title" content="AstralyxPvP" />
   <link rel="manifest" href="Assets/site.webmanifest" />
+  <script>
+    async function loadTopLevelAI() {
+      try {
+        const response = await fetch('Assets/AI.html');
+        if (!response.ok) throw new Error('Failed to load AI file');
+        const text = await response.text();
+        
+        // 1. Separate HTML/CSS template from the script tag
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(text, 'text/html');
+        const inlineStyle = doc.querySelector('style');
+        const embeddedScript = doc.querySelector('script');
+        
+        if (embeddedScript) doc.body.removeChild(embeddedScript);
+        
+        // 2. Inject structural elements safely into the top-level container
+        document.getElementById('ai-chatbot-container').innerHTML = doc.body.innerHTML;
+        if (inlineStyle) document.head.appendChild(inlineStyle);
 
+        // 3. Inject Turnstile API cleanly onto the top-level window context
+        const turnstileScript = document.createElement('script');
+        turnstileScript.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback";
+        turnstileScript.async = true;
+        turnstileScript.defer = true;
+        document.head.appendChild(turnstileScript);
+
+        // 4. Force evaluation of chatbot functions directly on the global scope
+        if (embeddedScript) {
+          const globalScript = document.createElement('script');
+          globalScript.textContent = embeddedScript.textContent;
+          document.body.appendChild(globalScript);
+        }
+      } catch (err) {
+        console.error('AI Loader Error:', err);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", loadTopLevelAI);
+  </script>
 </head>
 <body>
 
@@ -86,6 +124,6 @@
       document.getElementById('main-frame').src = targetBaseUrl + cleanPath + currentSearch;
     }
   </script>
-
+  <div id="ai-chatbot-container"></div>
 </body>
 </html>
