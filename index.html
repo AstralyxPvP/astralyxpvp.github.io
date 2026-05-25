@@ -19,20 +19,16 @@
     }
   </style>
     
-  <!-- Optimized Search Title for Better Google CTR -->
   <title>AstralyxPvP | India 1.9+ FFA Minecraft PvP Server</title>
 
-  <!-- Developer Google Search Console Verifications -->
   <meta name="google-site-verification" content="UbCFuyQnLiGfHFSU_Z5NFExI5jrTz9EGxkf1ygz7sG4" />
 
   <link rel="canonical" href="https://astralyxpvp.github.io" />
 
-  <!-- SEO Metadata -->
   <meta name="description" content="Join AstralyxPvP, the premier India-based 1.9+ FFA PvP server. Experience fast-paced combat, skill-based battles, ELO Live Leaderboards, crates, and a thriving community. Prove your dominance in the arena today!" />
   <meta name="keywords" content="Minecraft PvP server, 1.9 PvP, FFA PvP, India Minecraft server, ELO Leaderboard, Minecraft crates, skill-based PvP, free Minecraft server, cracked Minecraft server, astralyx, astralyxpvp" />
   <meta name="author" content="Frostrax (Owner), IndianCoder3 &amp; DreamLong (NebulaGames Developers)" />
 
-  <!-- Structured Data for Rich Search Results -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -54,20 +50,19 @@
   }
   </script>
 
-  <!-- Social & Discord Webhook Embed Optimization (Open Graph) -->
   <meta property="og:title" content="AstralyxPvP - The Ultimate 1.9 FFA PvP Battlefield" />
   <meta property="og:description" content="Join AstralyxPvP, the premier India-based 1.9+ FFA PvP server. Experience fast-paced combat, skill-based battles, ELO Live Leaderboards, crates, and a thriving community." />
   <meta property="og:image" content="https://astralyxpvp.pages.dev/Assets/logo-compress.png" />
   <meta property="og:url" content="https://astralyxpvp.pages.dev" />
   <meta property="og:type" content="website" />
 
-  <!-- Device Favicons & Web Manifest File -->
   <link rel="icon" type="image/png" href="Assets/favicon-96x96.png" sizes="96x96" />
   <link rel="icon" type="image/svg+xml" href="Assets/favicon.svg" />
   <link rel="shortcut icon" href="Assets/favicon.ico" />
   <link rel="apple-touch-icon" sizes="180x180" href="Assets/apple-touch-icon.png" />
   <meta name="apple-mobile-web-app-title" content="AstralyxPvP" />
   <link rel="manifest" href="Assets/site.webmanifest" />
+  
   <script>
     async function loadTopLevelAI() {
       try {
@@ -75,31 +70,41 @@
         if (!response.ok) throw new Error('Failed to load AI file');
         const text = await response.text();
         
-        // 1. Separate HTML/CSS template from the script tag
         const parser = new DOMParser();
         const doc = parser.parseFromString(text, 'text/html');
+        
+        // 1. Safely extract and clone styles without breaking the virtual document tree
         const inlineStyle = doc.querySelector('style');
+        if (inlineStyle) {
+          document.head.appendChild(inlineStyle.cloneNode(true));
+          inlineStyle.remove();
+        }
+        
+        // 2. Isolate internal functional logic from template structure
         const embeddedScript = doc.querySelector('script');
+        let scriptCode = "";
+        if (embeddedScript) {
+          scriptCode = embeddedScript.textContent;
+          embeddedScript.remove();
+        }
         
-        if (embeddedScript) doc.body.removeChild(embeddedScript);
-        
-        // 2. Inject structural elements safely into the top-level container
+        // 3. Inject clean HTML components onto the true primary layout container
         document.getElementById('ai-chatbot-container').innerHTML = doc.body.innerHTML;
-        if (inlineStyle) document.head.appendChild(inlineStyle);
 
-        // 3. Inject Turnstile API cleanly onto the top-level window context
+        // 4. Force compilation directly into the top-level parent window memory space
+        if (scriptCode.trim() !== "") {
+          const globalScript = document.createElement('script');
+          globalScript.textContent = scriptCode;
+          document.body.appendChild(globalScript);
+        }
+
+        // 5. Inject the explicit Turnstile API onto the primary domain layer (int.yt context)
         const turnstileScript = document.createElement('script');
         turnstileScript.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback";
         turnstileScript.async = true;
         turnstileScript.defer = true;
         document.head.appendChild(turnstileScript);
 
-        // 4. Force evaluation of chatbot functions directly on the global scope
-        if (embeddedScript) {
-          const globalScript = document.createElement('script');
-          globalScript.textContent = embeddedScript.textContent;
-          document.body.appendChild(globalScript);
-        }
       } catch (err) {
         console.error('AI Loader Error:', err);
       }
@@ -110,7 +115,6 @@
 </head>
 <body>
 
-  <!-- The iframe defaults to your homepage -->
   <iframe id="main-frame" src="https://astralyxpvp.pages.dev"></iframe>
 
   <script>
@@ -124,6 +128,7 @@
       document.getElementById('main-frame').src = targetBaseUrl + cleanPath + currentSearch;
     }
   </script>
+  
   <div id="ai-chatbot-container"></div>
 </body>
 </html>
