@@ -64,6 +64,19 @@
   <link rel="manifest" href="Assets/site.webmanifest" />
   
   <script>
+    // Global tracking references for Cloudflare Turnstile initialization
+    let turnstileWidgetId = null;
+    
+    window.onloadTurnstileCallback = function() {
+        if (typeof turnstile !== "undefined") {
+            turnstileWidgetId = turnstile.render('#my-turnstile-widget', {
+                sitekey: '0x4AAAARADWJPqtDres3ON2q', // Explicit public verification sitekey
+                callback: 'onTurnstileSuccess',
+                size: 'invisible'
+            });
+        }
+    };
+
     async function loadTopLevelAI() {
       try {
         const response = await fetch('Assets/AI.html');
@@ -73,14 +86,14 @@
         const parser = new DOMParser();
         const doc = parser.parseFromString(text, 'text/html');
         
-        // 1. Safely extract and clone styles without breaking the virtual document tree
+        // 1. Extract style tags and hook safely to head layout
         const inlineStyle = doc.querySelector('style');
         if (inlineStyle) {
           document.head.appendChild(inlineStyle.cloneNode(true));
           inlineStyle.remove();
         }
         
-        // 2. Isolate internal functional logic from template structure
+        // 2. Extract script code block strings safely
         const embeddedScript = doc.querySelector('script');
         let scriptCode = "";
         if (embeddedScript) {
@@ -88,17 +101,17 @@
           embeddedScript.remove();
         }
         
-        // 3. Inject clean HTML components onto the true primary layout container
+        // 3. Inject remaining clean template layouts into view layer
         document.getElementById('ai-chatbot-container').innerHTML = doc.body.innerHTML;
 
-        // 4. Force compilation directly into the top-level parent window memory space
+        // 4. Force compilation of functional expressions on true window scope
         if (scriptCode.trim() !== "") {
           const globalScript = document.createElement('script');
           globalScript.textContent = scriptCode;
           document.body.appendChild(globalScript);
         }
 
-        // 5. Inject the explicit Turnstile API onto the primary domain layer (int.yt context)
+        // 5. Append implicit script script tag with runtime callback handlers
         const turnstileScript = document.createElement('script');
         turnstileScript.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback";
         turnstileScript.async = true;
@@ -118,7 +131,7 @@
   <iframe id="main-frame" src="https://astralyxpvp.pages.dev"></iframe>
 
   <script>
-    // 1. Check if the URL has a hash (like #leaderboard or #x)
+    // Check if the URL has a hash routing rule (like #leaderboard or #rules)
     const currentHash = window.location.hash;
     const targetBaseUrl = "https://astralyxpvp.pages.dev";
 
