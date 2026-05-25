@@ -1,15 +1,24 @@
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<div id="ai-chat-launcher" onclick="toggleAIChat()">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+</div>
 
 <div id="ai-chat-window" class="ai-hidden">
     <div class="ai-chat-header">
-        <h3>AstraBot AI</h3>
-        <button onclick="toggleAIChat()">&times;</button>
+        <div class="ai-chat-branding">
+            <div class="ai-chat-avatar">A</div>
+            <div>
+                <h3>AstraBot AI</h3>
+                <span class="ai-status-indicator">Online Assistant</span>
+            </div>
+        </div>
+        <button class="ai-close-btn" onclick="toggleAIChat()">&times;</button>
     </div>
+    
     <div id="ai-chat-messages" class="ai-chat-messages">
         <div class="ai-message ai-assistant">Hello! Welcome to AstralyxPvP. How can I help you today?</div>
     </div>
     
-    <div id="my-turnstile-widget" class="cf-turnstile" data-sitekey="0x4AAAAAADWJPqtDres3ON2q" data-callback="onTurnstileSuccess" data-size="invisible"></div>
+    <div id="my-turnstile-widget" class="cf-turnstile"></div>
 
     <div class="ai-chat-input-container">
         <input type="text" id="ai-user-input" placeholder="Ask about AstralyxPvP..." onkeypress="handleAIKeyPress(event)">
@@ -17,23 +26,155 @@
     </div>
 </div>
 
+<style>
+    /* Floating Launcher Button Styling Placement */
+    #ai-chat-launcher {
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff4b2b, #ff416c);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 16px rgba(255, 75, 43, 0.4);
+        z-index: 9999999;
+        transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    #ai-chat-launcher:hover {
+        transform: scale(1.08);
+    }
+
+    /* Primary Container Window Panels Layout Configuration rules */
+    #ai-chat-window {
+        position: fixed;
+        bottom: 95px;
+        right: 25px;
+        width: 360px;
+        max-width: calc(100vw - 50px);
+        height: 500px;
+        max-height: calc(100vh - 130px);
+        background: #111116;
+        border: 1px solid #222232;
+        border-radius: 16px;
+        box-shadow: 0 12px 36px rgba(0,0,0,0.6);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        z-index: 9999999;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.075, 0.82, 0.165, 1);
+    }
+    
+    .ai-hidden {
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(20px) scale(0.95);
+    }
+
+    /* Headers panel section blocks styling definitions */
+    .ai-chat-header {
+        background: #161624;
+        padding: 14px 16px;
+        border-bottom: 1px solid #222232;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .ai-chat-branding { display: flex; align-items: center; gap: 10px; }
+    .ai-chat-avatar {
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(135deg, #ff4b2b, #ff416c);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: white;
+        font-size: 15px;
+    }
+    .ai-chat-branding h3 { color: white; margin: 0; font-size: 14px; font-weight: 600; }
+    .ai-status-indicator { color: #4ade80; font-size: 11px; display: block; margin-top: 2px; }
+    .ai-close-btn { background: none; border: none; color: #667; font-size: 24px; cursor: pointer; padding: 0 4px; }
+    .ai-close-btn:hover { color: white; }
+
+    /* Messages streams scroll views structure alignments mapping definitions */
+    .ai-chat-messages {
+        flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #0c0c10;
+    }
+    .ai-message {
+        max-width: 82%; padding: 10px 14px; border-radius: 14px; font-size: 13.5px; line-height: 1.45; color: #e4e4ed;
+        word-break: break-word;
+    }
+    .ai-assistant { background: #1b1b26; align-self: flex-start; border-bottom-left-radius: 3px; }
+    .ai-user { background: #ff4b2b; color: white; align-self: flex-end; border-bottom-right-radius: 3px; }
+
+    /* Footer layouts input component parameters boundaries definitions rules */
+    .ai-chat-input-container {
+        padding: 12px; background: #161624; border-top: 1px solid #222232; display: flex; gap: 8px; align-items: center;
+    }
+    #ai-user-input {
+        flex: 1; background: #1f1f2e; border: 1px solid #2f2f45; border-radius: 8px; color: white;
+        padding: 10px 14px; font-size: 13px; outline: none; transition: border-color 0.2s;
+    }
+    #ai-user-input:focus { border-color: #ff4b2b; }
+    #ai-send-btn {
+        background: #ff4b2b; border: none; color: white; padding: 10px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px;
+    }
+    #ai-send-btn:hover { background: #ff416c; }
+</style>
+
 <script>
     const WORKER_URL = 'https://astralyxpvp.chessmrbeaston.workers.dev/api'; 
+    const INSTRUCTIONS_FILE_URL = 'https://astralyxpvp.pages.dev/Assets/instructions.txt';
+
     let conversationHistory = [{ role: 'assistant', content: 'Hello! Welcome to AstralyxPvP.' }];
     let turnstileToken = "";
 
-    // This runs automatically when Turnstile validates the user
-    function onTurnstileSuccess(token) {
+    // Interface toggler handler parameters assignment routines
+    window.toggleAIChat = function() {
+        const chatWin = document.getElementById('ai-chat-window');
+        if (chatWin) chatWin.classList.toggle('ai-hidden');
+    };
+
+    // Global callback resolution assignment
+    window.onTurnstileSuccess = function(token) {
         turnstileToken = token;
+    };
+
+    window.handleAIKeyPress = function(event) {
+        if (event.key === 'Enter' || event.keyCode === 13) {
+            sendAIMessage();
+        }
+    };
+
+    function appendMessage(text, className) {
+        const msgContainer = document.getElementById('ai-chat-messages');
+        if (!msgContainer) return null;
+        
+        const msgEl = document.createElement('div');
+        const uniqueId = 'ai-msg-' + Date.now();
+        msgEl.className = `ai-message ${className}`;
+        msgEl.id = uniqueId;
+        msgEl.innerText = text;
+        
+        msgContainer.appendChild(msgEl);
+        msgContainer.scrollTop = msgContainer.scrollHeight;
+        return uniqueId;
     }
 
-async function sendAIMessage() {
+    window.sendAIMessage = async function() {
         const inputEl = document.getElementById('ai-user-input');
-        const messageText = inputEl.value.trim();
+        const messageText = inputEl?.value.trim();
         if (!messageText) return;
 
         if (!turnstileToken) {
-            alert("Security check pending. Please wait a moment.");
+            alert("Security challenge pending execution logic. Please wait a brief moment.");
             return;
         }
 
@@ -43,18 +184,17 @@ async function sendAIMessage() {
 
         const loadingId = appendMessage('Thinking...', 'ai-assistant');
 
-        // 1. Fetch your massive instructions file directly from the frontend browser context
+        // Fetch local instruction parameters blocks configurations
         let systemPromptText = "You are a helpful assistant.";
         try {
-            const fileCheck = await fetch('/Assets/instructions.txt');
+            const fileCheck = await fetch(INSTRUCTIONS_FILE_URL);
             if (fileCheck.ok) {
                 systemPromptText = await fileCheck.text();
             }
         } catch (fileErr) {
-            console.error("Could not fetch instruction file locally, using default fallback.");
+            console.error("Local rules asset lookup bypassed framework parameters:", fileErr);
         }
 
-        // 2. Dispatch everything securely to your Cloudflare Worker
         try {
             const response = await fetch(WORKER_URL, {
                 method: 'POST',
@@ -64,28 +204,30 @@ async function sendAIMessage() {
                 },
                 body: JSON.stringify({ 
                     messages: conversationHistory,
-                    // Sending the text file content directly inside the JSON payload
                     config_prompt: systemPromptText 
                 })
             });
 
+            // Invalidate current operational validation parameters to prepare for generation loops
             turnstileToken = "";
-            if (typeof turnstile !== "undefined") turnstile.reset('#my-turnstile-widget');
+            if (typeof turnstile !== "undefined" && typeof turnstileWidgetId !== "undefined" && turnstileWidgetId !== null) {
+                turnstile.reset(turnstileWidgetId);
+            }
 
             const data = await response.json();
-            document.getElementById(loadingId).remove();
+            const loadingNode = document.getElementById(loadingId);
+            if (loadingNode) loadingNode.remove();
 
             if (response.ok && data.reply) {
                 appendMessage(data.reply, 'ai-assistant');
                 conversationHistory.push({ role: 'assistant', content: data.reply });
             } else {
-                appendMessage(data.error || 'Security verification failed.', 'ai-assistant');
+                appendMessage(data.error || 'System transaction framework verification failed.', 'ai-assistant');
             }
         } catch (error) {
-            document.getElementById(loadingId).remove();
-            appendMessage('Could not connect to secure verification server.', 'ai-assistant');
+            const loadingNode = document.getElementById(loadingId);
+            if (loadingNode) loadingNode.remove();
+            appendMessage('Unable to confirm gateway data parameters exchange routes.', 'ai-assistant');
         }
-    }
-
-    // ... keeping your existing layout functions (appendMessage, toggleAIChat, etc.)
+    };
 </script>
