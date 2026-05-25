@@ -62,69 +62,6 @@
   <link rel="apple-touch-icon" sizes="180x180" href="Assets/apple-touch-icon.png" />
   <meta name="apple-mobile-web-app-title" content="AstralyxPvP" />
   <link rel="manifest" href="Assets/site.webmanifest" />
-  
-  <script>
-    // Global tracking references for Cloudflare Turnstile initialization
-    let turnstileWidgetId = null;
-    
-    window.onloadTurnstileCallback = function() {
-        if (typeof turnstile !== "undefined") {
-            turnstileWidgetId = turnstile.render('#my-turnstile-widget', {
-                sitekey: '0x4AAAARADWJPqtDres3ON2q', // Explicit public verification sitekey
-                callback: 'onTurnstileSuccess',
-                size: 'invisible'
-            });
-        }
-    };
-
-    async function loadTopLevelAI() {
-      try {
-        const response = await fetch('Assets/AI.html');
-        if (!response.ok) throw new Error('Failed to load AI file');
-        const text = await response.text();
-        
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(text, 'text/html');
-        
-        // 1. Extract style tags and hook safely to head layout
-        const inlineStyle = doc.querySelector('style');
-        if (inlineStyle) {
-          document.head.appendChild(inlineStyle.cloneNode(true));
-          inlineStyle.remove();
-        }
-        
-        // 2. Extract script code block strings safely
-        const embeddedScript = doc.querySelector('script');
-        let scriptCode = "";
-        if (embeddedScript) {
-          scriptCode = embeddedScript.textContent;
-          embeddedScript.remove();
-        }
-        
-        // 3. Inject remaining clean template layouts into view layer
-        document.getElementById('ai-chatbot-container').innerHTML = doc.body.innerHTML;
-
-        // 4. Force compilation of functional expressions on true window scope
-        if (scriptCode.trim() !== "") {
-          const globalScript = document.createElement('script');
-          globalScript.textContent = scriptCode;
-          document.body.appendChild(globalScript);
-        }
-
-        // 5. Append implicit script script tag with runtime callback handlers
-        const turnstileScript = document.createElement('script');
-        turnstileScript.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback";
-        turnstileScript.async = true;
-        turnstileScript.defer = true;
-        document.head.appendChild(turnstileScript);
-
-      } catch (err) {
-        console.error('AI Loader Error:', err);
-      }
-    }
-
-    document.addEventListener("DOMContentLoaded", loadTopLevelAI);
-  </script>
 </head>
 <body>
 
@@ -140,8 +77,5 @@
       const currentSearch = window.location.search;
       document.getElementById('main-frame').src = targetBaseUrl + cleanPath + currentSearch;
     }
-  </script>
-  
-  <div id="ai-chatbot-container"></div>
 </body>
 </html>
