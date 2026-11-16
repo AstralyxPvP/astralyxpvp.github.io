@@ -134,13 +134,13 @@ If players ask why they can't join or ask about maintenance, use this status inf
 We DO have a leaderboard which can be found on the website (/leaderboard) and many more bot commands.
 
 Frontend Development (Via Files)
-HTML: IndianCoder3 & DreamLong & Al13n
+HTML: IndianCoder3 & DreamLong
 CSS: IndianCoder3 & DreamLong
-JavaScript: IndianCoder3 & DreamLong & Al13n
+JavaScript: IndianCoder3 & DreamLong
 Frontend Development (Via Elements)
 UI & Info: IndianCoder3 & DreamLong
 T&C and Privacy Page: DreamLong
-Right-Click: Al13n & DreamLong
+Right-Click: DreamLong
 Animations IndianCoder3 & DreamLong
 Backend Development
 API: Dreamlong
